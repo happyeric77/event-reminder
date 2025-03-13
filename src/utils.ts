@@ -4,25 +4,6 @@ import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const getMonth = (date: Date) => {
-  const month = date.getMonth();
-  const monthDays = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  return monthDays[month];
-};
-
 export const notify = async (text: string): Promise<Response> => {
   const url = 'https://api.line.me/v2/bot/message/push';
   const channelSecret = process.env.LINE_CHANNEL_SECRET;
@@ -50,7 +31,12 @@ export const notify = async (text: string): Promise<Response> => {
 
 export const printLog = (msg: string, type: 'error' | 'info'): void => {
   const message = `[${new Date().toLocaleString()}] ${msg}`;
-  const logFilePath = path.join(__dirname, '..', 'assets', 'logs.txt');
+  const logFileDir = path.join(__dirname, '..', 'assets');
+  if (!fs.existsSync(logFileDir)) {
+    fs.mkdirSync(logFileDir, { recursive: true });
+  }
+  const logFilePath = path.join(logFileDir, 'log.txt');
+
   fs.appendFileSync(logFilePath, message + '\n', 'utf8');
   switch (type) {
     case 'error':
