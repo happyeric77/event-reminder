@@ -18,7 +18,7 @@ const main = async () => {
   const thisDay = today.getDate();
   try {
     const persons =
-      await sql`SELECT * FROM person WHERE EXTRACT(MONTH FROM birthday) = ${thisMonth} AND EXTRACT(DAY FROM birthday) = ${thisDay};`;
+      await sql`SELECT * FROM public.person WHERE EXTRACT(MONTH FROM birthday) = ${thisMonth} AND EXTRACT(DAY FROM birthday) = ${thisDay};`;
 
     if (persons.length === 0) {
       return printLog('今日誕生日の人はいません', 'info');
