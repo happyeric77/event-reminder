@@ -1,8 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 export type Person = {
-  id: 1;
   name: string;
-  birthday: Date;
   nickname: string;
+  birthday: Date;
+  group: string;
 };
 
 export const isPerson = (obj: unknown): obj is Person => {
@@ -11,9 +14,9 @@ export const isPerson = (obj: unknown): obj is Person => {
   }
   const person = obj as Person;
   return (
-    typeof person.id === 'number' &&
     typeof person.name === 'string' &&
+    typeof person.nickname === 'string' &&
     person.birthday instanceof Date &&
-    typeof person.nickname === 'string'
+    typeof person.group === 'string'
   );
 };
