@@ -15,9 +15,6 @@ const main = async () => {
 
   const sql = neon(process.env.DATABASE_URL);
   const today = new Date();
-  if (today.getHours() !== 8) {
-    return console.info('現在の時刻は8時ではありません');
-  }
   const thisMonth = today.getMonth() + 1;
   const thisDay = today.getDate();
 
@@ -38,6 +35,7 @@ const main = async () => {
     const persons = result.filter(isPerson);
 
     if (persons.length === 0) {
+      printLog(JSON.stringify(persons), 'info', logFilePath);
       return printLog('今日誕生日の人はいません', 'info', logFilePath);
     }
 
@@ -56,19 +54,19 @@ const main = async () => {
   }
 };
 
-const run = async (thread: () => Promise<void>, repeatInMinutes: number) => {
-  while (true) {
-    try {
-      await thread();
-    } catch (e) {
-      printLog(`Unknown Error: ${e}`, 'error', logFilePath);
-    }
-    console.info(`Waiting for ${repeatInMinutes} minutes...`);
-    await new Promise((resolve) =>
-      setTimeout(resolve, repeatInMinutes * 60 * 1000),
-    );
-  }
-};
+// const run = async (thread: () => Promise<void>, repeatInMinutes: number) => {
+//   while (true) {
+//     try {
+//       await thread();
+//     } catch (e) {
+//       printLog(`Unknown Error: ${e}`, 'error', logFilePath);
+//     }
+//     console.info(`Waiting for ${repeatInMinutes} minutes...`);
+//     await new Promise((resolve) =>
+//       setTimeout(resolve, repeatInMinutes * 60 * 1000),
+//     );
+//   }
+// };
 
 // run(async () => main(), 30);
 

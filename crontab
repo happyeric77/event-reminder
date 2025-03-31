@@ -1,0 +1,3 @@
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * cd /home/appuser/app && npm run start >> /home/appuser/cron.log 2>&1
+# new line character required!
