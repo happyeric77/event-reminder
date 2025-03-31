@@ -1,0 +1,4 @@
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+TZ=Asia/Tokyo
+30 8 * * * cd /home/appuser/app && npm run start >> /home/appuser/cron.log 2>&1
+# new line character required!
