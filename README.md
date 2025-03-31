@@ -1,6 +1,37 @@
 ## Overview
 
-This project sends reminder messages on individuals’ birthdays. Its main logic is in index.ts, which checks for birthdays each day at 8AM and sends notifications via the `notify` function.
+This project sends reminder messages on individuals’ birthdays. Its main logic is in index.ts, which checks for birthdays and sends LINE notifications via `LINE message API`.
+In `crontab` file, the script is scheduled to execute every day at 8:30 AM when running in a Docker container. You can adjust the schedule as needed.
+
+## Database
+
+Before getting started, make sure you have a proper database set up.
+
+- Entity-Relationship Diagram (ERD)
+
+![ERD](https://i.imgur.com/kasvJaT.png)
+
+- Database sql example
+
+```sql
+CREATE TABLE person (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  nickname VARCHAR(255),
+  birthday DATE
+);
+
+CREATE TABLE group_category (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE person_group (
+    person_id INT REFERENCES person(id) ON DELETE CASCADE,
+    group_id INT REFERENCES group_category(id) ON DELETE CASCADE,
+    PRIMARY KEY (person_id, group_id)
+);
+```
 
 ## Installation
 
@@ -12,9 +43,9 @@ npm install
 
 ## Configuration
 
-Create a new .env file by copying .env.example and setting the required environment variables, especially the database connection string and LINE settings.
+Create a new `.env` file by copying `.env.example` and setting the required environment variables, especially the database connection string and LINE settings.
 
-## Usage
+## Usage - Local Development
 
 Build the project, then start it:
 
@@ -23,15 +54,10 @@ npm run build
 npm start
 ```
 
-To run within Docker, use the Dockerfile and docker-compose.yml.
+## Usage - Docker
 
-## Database format
+To run the project in a Docker container, ensure you have Docker & Docker Compose installed. Then, run the following command:
 
-```sql
-CREATE TABLE person (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  nickname VARCHAR(255),
-  birthday DATE
-);
+```sh
+docker-compose up -d
 ```

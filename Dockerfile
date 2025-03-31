@@ -1,39 +1,34 @@
 FROM node:18.20.4
 
-# 安裝 cron
+# Install cron
 RUN apt update -y && apt install -y cron
 
-# 設置時區
-ENV TZ=Asia/Tokyo
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# 創建 appuser 用戶
+# Create user : appuser 
 RUN useradd -m appuser
 
-# 切換到 root 用戶，複製 crontab 文件並設置權限
+# Switch account to root，copy crontab and grant permission. Refer to: https://stackoverflow.com/questions/56340350/run-cron-as-non-root-user
 USER root
 COPY crontab /home/appuser/app-cron
 RUN chown appuser:appuser /home/appuser/app-cron
 RUN chmod gu+rw /var/run
 RUN chmod gu+s /usr/sbin/cron
 
-
-# 切換到 appuser 用戶並安裝 crontab
+# Switch to appuser and exec crontab file
 USER appuser
 RUN crontab /home/appuser/app-cron
 
-# 切換到工作目錄並複製代碼
+# Set container working directory and copy local files to it
 WORKDIR /home/appuser/app
 COPY . /home/appuser/app
 
-# 切換回 root 用戶以更改文件所有權
+# Switch to root and grant permission to appuser
 USER root
 RUN chown -R appuser:appuser /home/appuser/app
 
-# 切換回 appuser 並安裝依賴
+# Switch back to appuser and install npm packages
 USER appuser
 RUN npm install
 
-# 使用 appuser 啟動 cron
+# Start cron
 
 ENTRYPOINT ["cron", "-f"]

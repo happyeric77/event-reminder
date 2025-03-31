@@ -1,8 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 import dotenv from 'dotenv';
-// import { notify, printLog } from './utils';
 
-import { printLog } from './utils';
+import { notify, printLog } from './utils';
 import path from 'path';
 import { isPerson } from './models';
 dotenv.config();
@@ -35,7 +34,6 @@ const main = async () => {
     const persons = result.filter(isPerson);
 
     if (persons.length === 0) {
-      printLog(JSON.stringify(persons), 'info', logFilePath);
       return printLog('今日誕生日の人はいません', 'info', logFilePath);
     }
 
@@ -45,7 +43,8 @@ const main = async () => {
       .join('、');
 
     const message = `今日(${thisMonth}/${thisDay}) は ${nicknames} の誕生日です✨ ！！ おめでとうー！ `;
-    // notify(message);
+    printLog(message, 'info', logFilePath);
+    notify(message);
   } catch (error) {
     if (error instanceof Error) {
       return printLog(`ERROR: ${error.message}`, 'error', logFilePath);
@@ -53,21 +52,5 @@ const main = async () => {
     printLog(`ERROR: Unknown `, 'error', logFilePath);
   }
 };
-
-// const run = async (thread: () => Promise<void>, repeatInMinutes: number) => {
-//   while (true) {
-//     try {
-//       await thread();
-//     } catch (e) {
-//       printLog(`Unknown Error: ${e}`, 'error', logFilePath);
-//     }
-//     console.info(`Waiting for ${repeatInMinutes} minutes...`);
-//     await new Promise((resolve) =>
-//       setTimeout(resolve, repeatInMinutes * 60 * 1000),
-//     );
-//   }
-// };
-
-// run(async () => main(), 30);
 
 main();
